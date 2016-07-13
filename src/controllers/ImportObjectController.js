@@ -16,6 +16,17 @@ class ImportObjectController {
         this._map = null;
     }
 
+    changeObject (userMapData) {
+        const {geoObjects} = userMapData;
+        const ymaps = api.getAPI();
+
+        if (!geoObjects) {
+            return;
+        }
+        this._geoObject.removeFromMap(this._map);
+        this._geoObject = ymaps.geoQuery(this._prepare(geoObjects)).addToMap(this._map);
+    }
+
     _setupGeoObjects () {
         const {geoObjects} = this._data;
         const ymaps = api.getAPI();

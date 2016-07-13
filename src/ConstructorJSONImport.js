@@ -19,10 +19,10 @@ class ConstructorJSONImport extends Component {
         this._controller.destroy();
     }
 
-    componentWillReceiveProps () {
-        const {map} = this.context.mapController;
-        this._controller.destroy();
-        this._controller = new ImportObjectController(map, this.props.userMapData);
+    componentWillReceiveProps (newProps) {
+        if(JSON.stringify(newProps.userMapData) !== JSON.stringify(this.props.userMapData)) {
+            this._controller.changeObject(newProps.userMapData);
+        }
     }
 
     shouldComponentUpdate () {
