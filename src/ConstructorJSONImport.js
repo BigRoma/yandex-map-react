@@ -19,6 +19,12 @@ class ConstructorJSONImport extends Component {
         this._controller.destroy();
     }
 
+    componentWillReceiveProps () {
+        const {map} = this.context.mapController;
+        this._controller.destroy();
+        this._controller = new ImportObjectController(map, this.props.userMapData);
+    }
+
     shouldComponentUpdate () {
         return false;
     }
