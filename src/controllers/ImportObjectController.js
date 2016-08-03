@@ -23,8 +23,13 @@ class ImportObjectController {
         if (!geoObjects) {
             return;
         }
+
         this._geoObject.removeFromMap(this._map);
-        this._geoObject = ymaps.geoQuery(this._prepare(geoObjects)).addToMap(this._map);
+        this._geoObject = null;
+        this._geoObject = ymaps.geoQuery(this._prepare(geoObjects)).addToMap(this._map).applyBoundsToMap(this._map, {
+            checkZoomRange: true,
+            duration: 500,
+        });
     }
 
     _setupGeoObjects () {
@@ -35,7 +40,10 @@ class ImportObjectController {
             return;
         }
 
-        this._geoObject = ymaps.geoQuery(this._prepare(geoObjects)).addToMap(this._map);
+        this._geoObject = ymaps.geoQuery(this._prepare(geoObjects)).addToMap(this._map, {
+            checkZoomRange: true,
+            duration: 500
+        });
     }
 
     _prepare (collection) {
