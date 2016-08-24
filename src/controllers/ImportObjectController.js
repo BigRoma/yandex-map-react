@@ -81,6 +81,11 @@ class ImportObjectController {
 
     _clearPresets () {
         const ymaps = api.getAPI();
+
+        if (!this._presetKeys) {
+            return;
+        }
+
         this._presetKeys.forEach((key) => {
             ymaps.option.presetStorage.remove(key);
         });
