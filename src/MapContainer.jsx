@@ -34,7 +34,8 @@ class YandexMap extends Component {
     }
 
     static childContextTypes = {
-        mapController: PropTypes.object
+        mapController: PropTypes.object,
+        coordorder: PropTypes.oneOf(['latlong', 'longlat'])
     }
 
     constructor (props) {
@@ -46,7 +47,8 @@ class YandexMap extends Component {
 
     getChildContext () {
         return {
-            mapController: this._controller
+            mapController: this._controller,
+            coordorder: this.props.coordorder || 'latlong'
         };
     }
 
@@ -59,6 +61,19 @@ class YandexMap extends Component {
             switch (key) {
                 case 'controls':
                     this._controller.setState(key, nextProps[key]);
+                    break;
+                case 'center':
+                    if (this.props.center[0] !== nextProps.center[0]
+                      || this.props.center[1] !== nextProps.center[1] ) {
+                      this._controller.setCenter(nextProps.center);
+                    }
+
+                    break;
+                case 'zoom':
+                    if (this.props.zoom !== nextProps.zoom) {
+                      this._controller.setZoom(nextProps.zoom);
+                    }
+
                     break;
                 default:
                     break;

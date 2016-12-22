@@ -8,10 +8,13 @@ class MapMarker extends Component {
     static propTypes = {
         lat: PropTypes.number.isRequired,
         lon: PropTypes.number.isRequired,
+        properties: PropTypes.object,
+        options: PropTypes.object,
     }
 
     static contextTypes = {
-        mapController: PropTypes.object
+        mapController: PropTypes.object,
+        coordorder: PropTypes.oneOf(['latlong', 'longlat'])
     }
 
     constructor (props) {
@@ -20,10 +23,23 @@ class MapMarker extends Component {
     }
 
     componentDidUpdate (prevProps) {
-        const {lat, lon, children} = this.props;
+        const {lat, lon, children, properties, options} = this.props;
+
         if (lat !== prevProps.lat || lon !== prevProps.lon) {
-            this._controller.setPosition([lat, lon]);
+            this._controller.setPosition((this.context.coordorder === 'longlat') ? [lon, lat] : [lat, lon]);
         }
+
+        Object.keys(properties || {}).forEach(propName => {
+            if (!prevProps.properties || properties[propName] !== prevProps.properties[propName]) {
+                this._controller.setProperty(propName, properties[propName]);
+            }
+        });
+
+        Object.keys(options || {}).forEach(optName => {
+            if (!prevProps.options || options[optName] !== prevProps.options[optName]) {
+                this._controller.setOption(optName, options[optName]);
+            }
+        });
 
         if (children != prevProps.children) {
             this._clearLayouts();
@@ -32,9 +48,10 @@ class MapMarker extends Component {
     }
 
     componentDidMount () {
-        const {lat, lon} = this.props;
+        const {lat, lon, properties, options} = this.props;
 
-        this._controller = new MarkerController([lat, lon]);
+        this._controller = new MarkerController((this.context.coordorder === 'longlat') ? [lon, lat] : [lat, lon], properties, options);
+
         this._setupLayouts();
         this._setupEvents();
 
